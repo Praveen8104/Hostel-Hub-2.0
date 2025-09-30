@@ -264,17 +264,80 @@ class ApiService {
     return this.request(`/dining/menu/${menuId}/stats`);
   }
 
+  // Maintenance API methods
+  async getMaintenanceRequests(params = {}) {
+    const query = new URLSearchParams(params).toString();
+    return this.request(`/maintenance/requests${query ? `?${query}` : ''}`);
+  }
+
+  async createMaintenanceRequest(requestData) {
+    return this.request('/maintenance/request', {
+      method: 'POST',
+      body: requestData // FormData for file uploads
+    });
+  }
+
+  async getMaintenanceRequest(id) {
+    return this.request(`/maintenance/request/${id}`);
+  }
+
+  async updateMaintenanceStatus(id, statusData) {
+    return this.request(`/maintenance/request/${id}/status`, {
+      method: 'PUT',
+      body: JSON.stringify(statusData)
+    });
+  }
+
+  async rateMaintenanceRequest(id, ratingData) {
+    return this.request(`/maintenance/request/${id}/rating`, {
+      method: 'POST',
+      body: JSON.stringify(ratingData)
+    });
+  }
+
+  async cancelMaintenanceRequest(id) {
+    return this.request(`/maintenance/request/${id}`, {
+      method: 'DELETE'
+    });
+  }
+
+  // Outpass API methods
+  async getOutpassRequests(params = {}) {
+    const query = new URLSearchParams(params).toString();
+    return this.request(`/outpass/requests${query ? `?${query}` : ''}`);
+  }
+
+  async createOutpassRequest(requestData) {
+    return this.request('/outpass/request', {
+      method: 'POST',
+      body: requestData // FormData for file uploads
+    });
+  }
+
+  async getOutpassRequest(id) {
+    return this.request(`/outpass/request/${id}`);
+  }
+
+  async reviewOutpassRequest(id, reviewData) {
+    return this.request(`/outpass/request/${id}/review`, {
+      method: 'PUT',
+      body: JSON.stringify(reviewData)
+    });
+  }
+
+  async cancelOutpassRequest(id) {
+    return this.request(`/outpass/request/${id}`, {
+      method: 'DELETE'
+    });
+  }
+
+  async getOutpassStats(period = 'month') {
+    return this.request(`/outpass/stats?period=${period}`);
+  }
+
   // Other feature API methods
   async getAnnouncements() {
     return this.request('/announcements');
-  }
-
-  async getOutpassRequests() {
-    return this.request('/outpass/requests');
-  }
-
-  async getMaintenanceRequests() {
-    return this.request('/maintenance/requests');
   }
 
   async getCanteenMenu() {
