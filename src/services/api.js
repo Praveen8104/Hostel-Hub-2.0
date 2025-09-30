@@ -240,10 +240,31 @@ class ApiService {
     return this.request('/students/dashboard');
   }
 
+  // Dining API methods
   async getMenu(date) {
     return this.request(`/dining/menu/${date}`);
   }
 
+  async getWeeklyMenu(startDate) {
+    return this.request(`/dining/menu/week/${startDate}`);
+  }
+
+  async submitRating(ratingData) {
+    return this.request('/dining/rating', {
+      method: 'POST',
+      body: JSON.stringify(ratingData)
+    });
+  }
+
+  async getMealStats(period = 'week') {
+    return this.request(`/dining/stats/student?period=${period}`);
+  }
+
+  async getMenuStats(menuId) {
+    return this.request(`/dining/menu/${menuId}/stats`);
+  }
+
+  // Other feature API methods
   async getAnnouncements() {
     return this.request('/announcements');
   }
