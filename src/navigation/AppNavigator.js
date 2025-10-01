@@ -8,16 +8,22 @@ import DiningScreen from '../screens/dining/DiningScreen';
 import WeeklyMenuScreen from '../screens/dining/WeeklyMenuScreen';
 import MealStatsScreen from '../screens/dining/MealStatsScreen';
 
-// Import other feature screens
+// Import other feature screens  
 import DashboardScreen from '../screens/DashboardScreen';
-import AnnouncementsScreen from '../screens/AnnouncementsScreen';
-import MaintenanceScreen from '../screens/MaintenanceScreen';
-import CanteenScreen from '../screens/CanteenScreen';
+import AnnouncementsScreen from '../screens/announcements/AnnouncementsScreen';
+import MaintenanceScreen from '../screens/maintenance/MaintenanceScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+
+// Import canteen screens
+import CanteenScreen from '../screens/canteen/CanteenScreen';
+import CartScreen from '../screens/canteen/CartScreen';
+import MenuItemScreen from '../screens/canteen/MenuItemScreen';
+import OrderHistoryScreen from '../screens/canteen/OrderHistoryScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const DiningStack = createStackNavigator();
+const CanteenStack = createStackNavigator();
 
 // Dining Stack Navigator
 function DiningStackNavigator() {
@@ -64,6 +70,54 @@ function DiningStackNavigator() {
         }}
       />
     </DiningStack.Navigator>
+  );
+}
+
+// Canteen Stack Navigator
+function CanteenStackNavigator() {
+  return (
+    <CanteenStack.Navigator>
+      <CanteenStack.Screen 
+        name="CanteenMenu" 
+        component={CanteenScreen}
+        options={{
+          title: 'Canteen',
+          headerStyle: { backgroundColor: '#059669' },
+          headerTintColor: '#ffffff',
+          headerTitleStyle: { fontWeight: 'bold' }
+        }}
+      />
+      <CanteenStack.Screen 
+        name="MenuItem" 
+        component={MenuItemScreen}
+        options={{
+          title: 'Item Details',
+          headerStyle: { backgroundColor: '#059669' },
+          headerTintColor: '#ffffff',
+          headerTitleStyle: { fontWeight: 'bold' }
+        }}
+      />
+      <CanteenStack.Screen 
+        name="Cart" 
+        component={CartScreen}
+        options={{
+          title: 'My Cart',
+          headerStyle: { backgroundColor: '#059669' },
+          headerTintColor: '#ffffff',
+          headerTitleStyle: { fontWeight: 'bold' }
+        }}
+      />
+      <CanteenStack.Screen 
+        name="OrderHistory" 
+        component={OrderHistoryScreen}
+        options={{
+          title: 'Order History',
+          headerStyle: { backgroundColor: '#059669' },
+          headerTintColor: '#ffffff',
+          headerTitleStyle: { fontWeight: 'bold' }
+        }}
+      />
+    </CanteenStack.Navigator>
   );
 }
 
@@ -118,7 +172,7 @@ function AppNavigator() {
       />
       <Tab.Screen 
         name="Canteen" 
-        component={CanteenScreen}
+        component={CanteenStackNavigator}
         options={{ tabBarLabel: 'Canteen' }}
       />
       <Tab.Screen 

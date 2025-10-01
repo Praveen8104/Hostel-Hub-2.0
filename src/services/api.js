@@ -335,13 +335,203 @@ class ApiService {
     return this.request(`/outpass/stats?period=${period}`);
   }
 
-  // Other feature API methods
-  async getAnnouncements() {
-    return this.request('/announcements');
+  // Announcements API methods
+  async getAnnouncements(params = {}) {
+    const query = new URLSearchParams(params).toString();
+    return this.request(`/announcements${query ? `?${query}` : ''}`);
   }
 
-  async getCanteenMenu() {
-    return this.request('/canteen/menu');
+  async getAnnouncement(id) {
+    return this.request(`/announcements/${id}`);
+  }
+
+  async createAnnouncement(announcementData) {
+    return this.request('/announcements', {
+      method: 'POST',
+      body: announcementData // FormData for file uploads
+    });
+  }
+
+  async updateAnnouncement(id, announcementData) {
+    return this.request(`/announcements/${id}`, {
+      method: 'PUT',
+      body: announcementData // FormData for file uploads
+    });
+  }
+
+  async deleteAnnouncement(id) {
+    return this.request(`/announcements/${id}`, {
+      method: 'DELETE'
+    });
+  }
+
+  async markAnnouncementAsRead(id) {
+    return this.request(`/announcements/${id}/read`, {
+      method: 'POST'
+    });
+  }
+
+  async registerForEvent(id) {
+    return this.request(`/announcements/${id}/register`, {
+      method: 'POST'
+    });
+  }
+
+  async unregisterFromEvent(id) {
+    return this.request(`/announcements/${id}/register`, {
+      method: 'DELETE'
+    });
+  }
+
+  async pinAnnouncement(id) {
+    return this.request(`/announcements/${id}/pin`, {
+      method: 'POST'
+    });
+  }
+
+  async searchAnnouncements(searchQuery, params = {}) {
+    const query = new URLSearchParams({ q: searchQuery, ...params }).toString();
+    return this.request(`/announcements/search?${query}`);
+  }
+
+  async getAnnouncementStats(params = {}) {
+    const query = new URLSearchParams(params).toString();
+    return this.request(`/announcements/stats${query ? `?${query}` : ''}`);
+  }
+
+  // Canteen Menu API methods
+  async getMenuCategories() {
+    return this.request('/canteen/categories');
+  }
+
+  async createMenuCategory(categoryData) {
+    return this.request('/canteen/categories', {
+      method: 'POST',
+      body: JSON.stringify(categoryData)
+    });
+  }
+
+  async getMenuItems(params = {}) {
+    const query = new URLSearchParams(params).toString();
+    return this.request(`/canteen/menu${query ? `?${query}` : ''}`);
+  }
+
+  async getMenuItem(id) {
+    return this.request(`/canteen/menu/${id}`);
+  }
+
+  async createMenuItem(itemData) {
+    return this.request('/canteen/menu', {
+      method: 'POST',
+      body: itemData // FormData for file uploads
+    });
+  }
+
+  async updateMenuItem(id, itemData) {
+    return this.request(`/canteen/menu/${id}`, {
+      method: 'PUT',
+      body: itemData // FormData for file uploads
+    });
+  }
+
+  async deleteMenuItem(id) {
+    return this.request(`/canteen/menu/${id}`, {
+      method: 'DELETE'
+    });
+  }
+
+  async getPopularItems(limit = 10) {
+    return this.request(`/canteen/menu/popular?limit=${limit}`);
+  }
+
+  async getRecommendations(limit = 5) {
+    return this.request(`/canteen/menu/recommendations?limit=${limit}`);
+  }
+
+  async rateMenuItem(id, rating) {
+    return this.request(`/canteen/menu/${id}/rate`, {
+      method: 'POST',
+      body: JSON.stringify({ rating })
+    });
+  }
+
+  async searchMenuItems(searchQuery, params = {}) {
+    const query = new URLSearchParams({ q: searchQuery, ...params }).toString();
+    return this.request(`/canteen/search?${query}`);
+  }
+
+  // Cart API methods
+  async getCart() {
+    return this.request('/cart');
+  }
+
+  async addToCart(menuItemId, quantity, specialInstructions = '') {
+    return this.request('/cart/add', {
+      method: 'POST',
+      body: JSON.stringify({ menuItemId, quantity, specialInstructions })
+    });
+  }
+
+  async updateCartItem(menuItemId, quantity) {
+    return this.request('/cart/update', {
+      method: 'PUT',
+      body: JSON.stringify({ menuItemId, quantity })
+    });
+  }
+
+  async removeFromCart(menuItemId) {
+    return this.request(`/cart/remove/${menuItemId}`, {
+      method: 'DELETE'
+    });
+  }
+
+  async clearCart() {
+    return this.request('/cart/clear', {
+      method: 'DELETE'
+    });
+  }
+
+  // Order API methods
+  async placeOrder(orderData) {
+    return this.request('/orders', {
+      method: 'POST',
+      body: JSON.stringify(orderData)
+    });
+  }
+
+  async getOrders(params = {}) {
+    const query = new URLSearchParams(params).toString();
+    return this.request(`/orders${query ? `?${query}` : ''}`);
+  }
+
+  async getOrder(id) {
+    return this.request(`/orders/${id}`);
+  }
+
+  async updateOrderStatus(id, status, notes = '') {
+    return this.request(`/orders/${id}/status`, {
+      method: 'PUT',
+      body: JSON.stringify({ status, notes })
+    });
+  }
+
+  async cancelOrder(id, reason) {
+    return this.request(`/orders/${id}/cancel`, {
+      method: 'POST',
+      body: JSON.stringify({ reason })
+    });
+  }
+
+  async rateOrder(id, ratingData) {
+    return this.request(`/orders/${id}/rate`, {
+      method: 'POST',
+      body: JSON.stringify(ratingData)
+    });
+  }
+
+  async getOrderStats(params = {}) {
+    const query = new URLSearchParams(params).toString();
+    return this.request(`/orders/stats${query ? `?${query}` : ''}`);
   }
 }
 
