@@ -5,7 +5,7 @@ const path = require('path');
 const fs = require('fs');
 
 const OutpassRequest = require('../models/OutpassRequest');
-const { authenticate, requireStudent, requireWarden } = require('../middleware/auth');
+const { authenticateToken, requireStudent, requireWarden } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -45,7 +45,7 @@ const upload = multer({
 
 // POST /api/outpass/request - Create outpass request (Students only)
 router.post('/request', [
-  authenticate,
+  authenticateToken,
   requireStudent,
   upload.array('documents', 3),
   body('reason').notEmpty().withMessage('Reason is required').isLength({ max: 500 }),
@@ -168,7 +168,7 @@ router.post('/request', [
 });
 
 // GET /api/outpass/requests - Get outpass requests (Role-based access)
-router.get('/requests', authenticate, async (req, res) => {
+router.get('/requests', authenticateToken, async (req, res) => {
   try {
     const {
       page = 1,
@@ -237,7 +237,7 @@ router.get('/requests', authenticate, async (req, res) => {
 
 // GET /api/outpass/request/:id - Get specific outpass request
 router.get('/request/:id', [
-  authenticate,
+  authenticateToken,
   param('id').isMongoId().withMessage('Valid request ID required')
 ], async (req, res) => {
   try {
@@ -280,7 +280,7 @@ router.get('/request/:id', [
 
 // PUT /api/outpass/request/:id/review - Review outpass request (Warden only)
 router.put('/request/:id/review', [
-  authenticate,
+  authenticateToken,
   requireWarden,
   param('id').isMongoId().withMessage('Valid request ID required'),
   body('status').isIn(['approved', 'rejected']).withMessage('Status must be approved or rejected'),

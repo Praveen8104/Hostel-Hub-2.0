@@ -4,7 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const { body, validationResult, query } = require('express-validator');
 const Announcement = require('../models/Announcement');
-const auth = require('../middleware/auth');
+const { authenticateToken, requireWarden, requireAdmin } = require('../middleware/auth');
 const User = require('../models/User');
 
 // Configure multer for file uploads
@@ -83,7 +83,7 @@ const announcementValidation = [
 ];
 
 // GET /api/announcements - Get all announcements for user
-router.get('/', auth, [
+router.get('/', authenticateToken, [
   query('category').optional().isIn(['notice', 'event', 'emergency', 'maintenance', 'dining', 'general']),
   query('priority').optional().isIn(['low', 'medium', 'high', 'urgent']),
   query('unreadOnly').optional().isBoolean(),
@@ -137,7 +137,7 @@ router.get('/', auth, [
 });
 
 // GET /api/announcements/stats - Get announcement statistics
-router.get('/stats', auth, async (req, res) => {
+router.get('/stats', authenticateToken, async (req, res) => {
   try {
     // Only allow staff and above to view stats
     if (!['warden', 'admin'].includes(req.user.role)) {
@@ -172,7 +172,7 @@ router.get('/stats', auth, async (req, res) => {
 });
 
 // GET /api/announcements/search - Search announcements
-router.get('/search', auth, [
+router.get('/search', authenticateToken, [
   query('q').notEmpty().withMessage('Search query is required'),
   query('category').optional().isIn(['notice', 'event', 'emergency', 'maintenance', 'dining', 'general']),
   query('priority').optional().isIn(['low', 'medium', 'high', 'urgent'])
@@ -242,7 +242,7 @@ router.get('/search', auth, [
 });
 
 // GET /api/announcements/:id - Get single announcement
-router.get('/:id', auth, async (req, res) => {
+router.get('/:id', authenticateToken, async (req, res) => {
   try {
     const announcement = await Announcement.findById(req.params.id)
       .populate('createdBy', 'name email role')
@@ -288,7 +288,7 @@ router.get('/:id', auth, async (req, res) => {
 });
 
 // POST /api/announcements - Create new announcement
-router.post('/', auth, upload.array('attachments', 5), announcementValidation, async (req, res) => {
+router.post('/', authenticateToken, upload.array('attachments', 5), announcementValidation, async (req, res) => {
   try {
     // Only allow staff and above to create announcements
     if (!['warden', 'admin'].includes(req.user.role)) {
@@ -364,7 +364,7 @@ router.post('/', auth, upload.array('attachments', 5), announcementValidation, a
 });
 
 // PUT /api/announcements/:id - Update announcement
-router.put('/:id', auth, upload.array('attachments', 5), announcementValidation, async (req, res) => {
+router.put('/:id', authenticateToken, upload.array('attachments', 5), announcementValidation, async (req, res) => {
   try {
     const announcement = await Announcement.findById(req.params.id);
     
@@ -440,7 +440,7 @@ router.put('/:id', auth, upload.array('attachments', 5), announcementValidation,
 });
 
 // DELETE /api/announcements/:id - Delete announcement
-router.delete('/:id', auth, async (req, res) => {
+router.delete('/:id', authenticateToken, async (req, res) => {
   try {
     const announcement = await Announcement.findById(req.params.id);
     
@@ -477,7 +477,7 @@ router.delete('/:id', auth, async (req, res) => {
 });
 
 // POST /api/announcements/:id/read - Mark announcement as read
-router.post('/:id/read', auth, async (req, res) => {
+router.post('/:id/read', authenticateToken, async (req, res) => {
   try {
     const announcement = await Announcement.findById(req.params.id);
     
@@ -504,7 +504,7 @@ router.post('/:id/read', auth, async (req, res) => {
 });
 
 // POST /api/announcements/:id/register - Register for event
-router.post('/:id/register', auth, async (req, res) => {
+router.post('/:id/register', authenticateToken, async (req, res) => {
   try {
     const announcement = await Announcement.findById(req.params.id);
     
@@ -531,7 +531,7 @@ router.post('/:id/register', auth, async (req, res) => {
 });
 
 // DELETE /api/announcements/:id/register - Unregister from event
-router.delete('/:id/register', auth, async (req, res) => {
+router.delete('/:id/register', authenticateToken, async (req, res) => {
   try {
     const announcement = await Announcement.findById(req.params.id);
     
@@ -558,7 +558,7 @@ router.delete('/:id/register', auth, async (req, res) => {
 });
 
 // POST /api/announcements/:id/pin - Pin/Unpin announcement
-router.post('/:id/pin', auth, async (req, res) => {
+router.post('/:id/pin', authenticateToken, async (req, res) => {
   try {
     // Only admin can pin/unpin
     if (req.user.role !== 'admin') {

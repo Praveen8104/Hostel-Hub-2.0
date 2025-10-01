@@ -209,11 +209,14 @@ menuItemSchema.statics.getAvailableItems = function(filters = {}) {
     query.tags = { $in: filters.tags };
   }
   
-  if (filters.priceRange) {
-    query.price = {
-      $gte: filters.priceRange.min || 0,
-      $lte: filters.priceRange.max || 1000
-    };
+  if (filters.priceRange && (filters.priceRange.min !== undefined || filters.priceRange.max !== undefined)) {
+    query.price = {};
+    if (filters.priceRange.min !== undefined) {
+      query.price.$gte = filters.priceRange.min;
+    }
+    if (filters.priceRange.max !== undefined) {
+      query.price.$lte = filters.priceRange.max;
+    }
   }
   
   if (filters.search) {

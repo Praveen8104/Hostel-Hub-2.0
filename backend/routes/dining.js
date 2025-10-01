@@ -2,7 +2,7 @@ const express = require('express');
 const { body, validationResult, param } = require('express-validator');
 const MessMenu = require('../models/MessMenu');
 const MealRating = require('../models/MealRating');
-const { requireStudent, requireWarden, requireAdmin } = require('../middleware/auth');
+const { requireStudent, requireWarden, requireAdmin, authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -367,7 +367,7 @@ router.put('/menu/:id', [
 });
 
 // GET /api/dining/stats/student - Get student-accessible dining statistics
-router.get('/stats/student', authenticate, async (req, res) => {
+router.get('/stats/student', authenticateToken, async (req, res) => {
   try {
     const { period = 'week' } = req.query;
     

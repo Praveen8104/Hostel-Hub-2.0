@@ -5,7 +5,7 @@ const path = require('path');
 const fs = require('fs');
 
 const MaintenanceRequest = require('../models/MaintenanceRequest');
-const { authenticate, requireStudent, requireStaff, requireWarden } = require('../middleware/auth');
+const { authenticateToken, requireStudent, requireStaff, requireWarden } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -45,7 +45,7 @@ const upload = multer({
 
 // POST /api/maintenance/request - Create maintenance request (Students only)
 router.post('/request', [
-  authenticate,
+  authenticateToken,
   requireStudent,
   upload.array('photos', 5),
   body('title').notEmpty().withMessage('Title is required').isLength({ max: 200 }),
@@ -124,7 +124,7 @@ router.post('/request', [
 });
 
 // GET /api/maintenance/requests - Get maintenance requests (Role-based access)
-router.get('/requests', authenticate, async (req, res) => {
+router.get('/requests', authenticateToken, async (req, res) => {
   try {
     const {
       page = 1,
@@ -201,7 +201,7 @@ router.get('/requests', authenticate, async (req, res) => {
 
 // GET /api/maintenance/request/:id - Get specific maintenance request
 router.get('/request/:id', [
-  authenticate,
+  authenticateToken,
   param('id').isMongoId().withMessage('Valid request ID required')
 ], async (req, res) => {
   try {
@@ -242,7 +242,7 @@ router.get('/request/:id', [
 
 // PUT /api/maintenance/request/:id/status - Update request status (Staff only)
 router.put('/request/:id/status', [
-  authenticate,
+  authenticateToken,
   requireStaff,
   param('id').isMongoId().withMessage('Valid request ID required'),
   body('status').isIn(['acknowledged', 'in_progress', 'waiting_parts', 'completed', 'cancelled', 'rejected']),
@@ -301,7 +301,7 @@ router.put('/request/:id/status', [
 
 // PUT /api/maintenance/request/:id/assign - Assign request to staff (Warden/Admin only)
 router.put('/request/:id/assign', [
-  authenticate,
+  authenticateToken,
   requireWarden,
   param('id').isMongoId().withMessage('Valid request ID required'),
   body('assignedTo').isMongoId().withMessage('Valid staff ID required'),
@@ -358,7 +358,7 @@ router.put('/request/:id/assign', [
 
 // POST /api/maintenance/request/:id/rating - Rate completed request (Students only)
 router.post('/request/:id/rating', [
-  authenticate,
+  authenticateToken,
   requireStudent,
   param('id').isMongoId().withMessage('Valid request ID required'),
   body('rating').isInt({ min: 1, max: 5 }).withMessage('Rating must be between 1 and 5'),
@@ -489,7 +489,7 @@ router.get('/stats', requireStaff, async (req, res) => {
 
 // DELETE /api/maintenance/request/:id - Cancel maintenance request (Student only, pending requests)
 router.delete('/request/:id', [
-  authenticate,
+  authenticateToken,
   requireStudent,
   param('id').isMongoId().withMessage('Valid request ID required')
 ], async (req, res) => {

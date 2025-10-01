@@ -172,8 +172,8 @@ router.get('/menu', [
       search: req.query.search,
       tags: req.query.tags ? req.query.tags.split(',') : [],
       priceRange: {
-        min: parseFloat(req.query.minPrice),
-        max: parseFloat(req.query.maxPrice)
+        min: req.query.minPrice ? parseFloat(req.query.minPrice) : undefined,
+        max: req.query.maxPrice ? parseFloat(req.query.maxPrice) : undefined
       },
       sortBy: req.query.sortBy || 'name',
       includeOutOfStock: req.query.includeOutOfStock === 'true'
