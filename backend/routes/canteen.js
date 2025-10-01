@@ -4,7 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const { body, validationResult, query } = require('express-validator');
 const { MenuCategory, MenuItem } = require('../models/Menu');
-const auth = require('../middleware/auth');
+const { authenticateToken, requireAdmin } = require('../middleware/auth');
 
 // Configure multer for menu item images
 const storage = multer.diskStorage({
@@ -112,7 +112,7 @@ router.get('/categories', async (req, res) => {
 });
 
 // POST /api/canteen/categories - Create new category (Admin/Canteen owner only)
-router.post('/categories', auth, categoryValidation, async (req, res) => {
+router.post('/categories', authenticateToken, categoryValidation, async (req, res) => {
   try {
     // Only admin and canteen_owner can create categories
     if (!['admin', 'canteen_owner'].includes(req.user.role)) {
@@ -236,7 +236,7 @@ router.get('/menu/popular', [
 });
 
 // GET /api/canteen/menu/recommendations - Get personalized recommendations
-router.get('/menu/recommendations', auth, [
+router.get('/menu/recommendations', authenticateToken, [
   query('limit').optional().isInt({ min: 1, max: 20 })
 ], async (req, res) => {
   try {
@@ -284,7 +284,7 @@ router.get('/menu/:id', async (req, res) => {
 });
 
 // POST /api/canteen/menu - Create new menu item (Admin/Canteen owner only)
-router.post('/menu', auth, upload.single('image'), menuItemValidation, async (req, res) => {
+router.post('/menu', authenticateToken, upload.single('image'), menuItemValidation, async (req, res) => {
   try {
     // Only admin and canteen_owner can create menu items
     if (!['admin', 'canteen_owner'].includes(req.user.role)) {
@@ -355,7 +355,7 @@ router.post('/menu', auth, upload.single('image'), menuItemValidation, async (re
 });
 
 // PUT /api/canteen/menu/:id - Update menu item (Admin/Canteen owner only)
-router.put('/menu/:id', auth, upload.single('image'), menuItemValidation, async (req, res) => {
+router.put('/menu/:id', authenticateToken, upload.single('image'), menuItemValidation, async (req, res) => {
   try {
     // Only admin and canteen_owner can update menu items
     if (!['admin', 'canteen_owner'].includes(req.user.role)) {
@@ -432,7 +432,7 @@ router.put('/menu/:id', auth, upload.single('image'), menuItemValidation, async 
 });
 
 // DELETE /api/canteen/menu/:id - Delete menu item (Admin/Canteen owner only)
-router.delete('/menu/:id', auth, async (req, res) => {
+router.delete('/menu/:id', authenticateToken, async (req, res) => {
   try {
     // Only admin and canteen_owner can delete menu items
     if (!['admin', 'canteen_owner'].includes(req.user.role)) {
@@ -468,7 +468,7 @@ router.delete('/menu/:id', auth, async (req, res) => {
 });
 
 // POST /api/canteen/menu/:id/rate - Rate a menu item
-router.post('/menu/:id/rate', auth, [
+router.post('/menu/:id/rate', authenticateToken, [
   body('rating')
     .isFloat({ min: 1, max: 5 })
     .withMessage('Rating must be between 1 and 5')

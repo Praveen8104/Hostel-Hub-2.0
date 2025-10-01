@@ -17,6 +17,7 @@ const outpassRoutes = require('./routes/outpass');
 const maintenanceRoutes = require('./routes/maintenance');
 const announcementRoutes = require('./routes/announcements');
 const canteenRoutes = require('./routes/canteen');
+const cartRoutes = require('./routes/cart');
 const adminRoutes = require('./routes/admin');
 
 // Import middleware
@@ -84,7 +85,9 @@ app.use('/api/dining', authenticateToken, diningRoutes);
 app.use('/api/outpass', authenticateToken, outpassRoutes);
 app.use('/api/maintenance', authenticateToken, maintenanceRoutes);
 app.use('/api/announcements', authenticateToken, announcementRoutes);
-app.use('/api/canteen', authenticateToken, canteenRoutes);
+// app.use('/api/canteen', authenticateToken, canteenRoutes); // Temporarily disabled for testing
+app.use('/api/cart', authenticateToken, cartRoutes);
+app.use('/api/orders', authenticateToken, cartRoutes);
 app.use('/api/admin', authenticateToken, adminRoutes);
 
 // Static file serving
