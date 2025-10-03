@@ -85,7 +85,7 @@ app.use('/api/dining', authenticateToken, diningRoutes);
 app.use('/api/outpass', authenticateToken, outpassRoutes);
 app.use('/api/maintenance', authenticateToken, maintenanceRoutes);
 app.use('/api/announcements', authenticateToken, announcementRoutes);
-// app.use('/api/canteen', authenticateToken, canteenRoutes); // Temporarily disabled for testing
+app.use('/api/canteen', authenticateToken, canteenRoutes);
 app.use('/api/cart', authenticateToken, cartRoutes);
 app.use('/api/orders', authenticateToken, cartRoutes);
 app.use('/api/admin', authenticateToken, adminRoutes);
