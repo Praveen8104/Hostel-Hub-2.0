@@ -8,6 +8,10 @@ import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 // Context
 import { AuthProvider, useAuth } from './src/context/AuthContext';
 
+// Components
+import ErrorBoundary from './src/components/ErrorBoundary';
+import LoadingScreen from './src/components/LoadingComponents';
+
 // Auth Screens
 import LoginScreen from './src/screens/auth/LoginScreen';
 import RegisterScreen from './src/screens/auth/RegisterScreen';
@@ -147,10 +151,12 @@ const AppNavigator = () => {
 // Main App Component
 export default function App() {
   return (
-    <AuthProvider>
-      <StatusBar style="auto" />
-      <AppNavigator />
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <StatusBar style="auto" />
+        <AppNavigator />
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 
